@@ -1,7 +1,11 @@
-FROM caddy:2.7.5-builder-alpine AS builder
+ARG VERSION=2.8.0
 
-RUN --mount=type=cache,target=/root/.cache/go-build xcaddy build v2.7.5 --with github.com/caddy-dns/rfc2136@6096cd5db964c3f7757986b73ffa0617534497f7
+FROM caddy:${VERSION}-builder-alpine AS builder
+ARG VERSION
 
-FROM caddy:2.7.5-alpine
+RUN --mount=type=cache,target=/root/.cache/go-build xcaddy build v${VERSION} --with github.com/caddy-dns/rfc2136@master
+
+FROM caddy:${VERSION}-alpine
+ARG VERSION
 
 COPY --from=builder /usr/bin/caddy /usr/bin/caddy
